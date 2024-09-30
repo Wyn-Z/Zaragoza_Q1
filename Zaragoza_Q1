@@ -1,0 +1,101 @@
+import java.util.Scanner;
+
+public class StudentEnrollment {
+
+    // Declare necessary fields for the student enrollment
+    private String studentName;
+    private String course;
+    private String courseCode;
+    private int numberOfUnits;
+    private final int MAX_SUBJECTS = 10;
+    private final int FEE_PER_UNIT = 1000;
+    private double totalFee;
+
+    // Method to input student information
+    public void inputStudentInfo() {
+        Scanner scanner = new Scanner(System.in);
+        
+        // Input student name
+        System.out.print("Enter student name: ");
+        studentName = scanner.nextLine();
+        
+        // Input course name
+        System.out.print("Enter course name: ");
+        course = scanner.nextLine();
+        
+        // Input course code
+        System.out.print("Enter course code: ");
+        courseCode = scanner.nextLine();
+        
+        // Input number of units (with validation for the limit)
+        do {
+            System.out.print("Enter the number of units (max " + MAX_SUBJECTS + "): ");
+            if (scanner.hasNextInt()) {
+                numberOfUnits = scanner.nextInt();
+                scanner.nextLine();  // Consume the leftover newline
+            } else {
+                System.out.println("Please enter a valid integer for the number of units.");
+                scanner.nextLine(); // Consume invalid input
+                continue;
+            }
+            
+            if (numberOfUnits < 1 || numberOfUnits > MAX_SUBJECTS) {
+                System.out.println("Invalid number of units. Please enter between 1 and " + MAX_SUBJECTS + ".");
+            }
+        } while (numberOfUnits < 1 || numberOfUnits > MAX_SUBJECTS);
+        
+        // Calculate total fee based on units
+        totalFee = numberOfUnits * FEE_PER_UNIT;
+    }
+
+    // Method to compute enrollment fee
+    public double computeEnrollmentFee() {
+        return totalFee;
+    }
+
+    // Method to handle payment
+    public void handlePayment() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter payment amount: ");
+        
+        double payment = 0;
+        if (scanner.hasNextDouble()) {
+            payment = scanner.nextDouble();
+        } else {
+            System.out.println("Please enter a valid payment amount.");
+            return;
+        }
+
+        // Check if payment is fully paid, partial, or overpaid
+        if (Math.abs(payment - totalFee) < 0.001) {  // Tolerance for floating-point comparison
+            System.out.println("Fully Paid");
+        } else if (payment < totalFee) {
+            System.out.println("Partial Payment. Amount paid: " + payment);
+            System.out.println("Remaining balance: " + (totalFee - payment));
+        } else {
+            System.out.println("Overpayment detected. Amount overpaid: " + (payment - totalFee));
+        }
+    }
+
+    // Method to display the student's name and total fee
+    public void displayInfo() {
+        System.out.println("\nStudent Name: " + studentName);
+        System.out.println("Course: " + course);
+        System.out.println("Course Code: " + courseCode);
+        System.out.println("Total Enrollment Fee: " + totalFee);
+    }
+
+    public static void main(String[] args) {
+        // Create an instance of StudentEnrollment
+        StudentEnrollment enrollment = new StudentEnrollment();
+        
+        // Input student details
+        enrollment.inputStudentInfo();
+        
+        // Display student information and computed fee
+        enrollment.displayInfo();
+        
+        // Handle payment process
+        enrollment.handlePayment();
+    }
+}
